@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Little_100 — Personal Homepage Script
    ============================================================ */
 (function () {
@@ -875,30 +875,35 @@
 
   /* ── Bilibili Data ───────────────────────────────────── */
   function fetchBiliData() {
-    fetch('data/bilibili.json')
+    var uid = SITE_CONFIG.bilibiliUid;
+    fetch('https://api.bilibili.com/x/web-interface/card?mid=' + uid)
       .then(function (r) { return r.json(); })
-      .then(function (data) {
+      .then(function (res) {
+        if (res.code !== 0) throw new Error('Bilibili API Error');
+        var data = res.data.card;
+        var archive_count = res.data.archive_count;
+
         // Update stats
         var followerEl = document.getElementById('bili-follower');
         var followingEl = document.getElementById('bili-following');
         var videosEl = document.getElementById('bili-videos');
 
-        if (followerEl) followerEl.setAttribute('data-count', data.follower || SITE_CONFIG.biliFallback.follower);
-        if (followingEl) followingEl.setAttribute('data-count', data.following || SITE_CONFIG.biliFallback.following);
-        if (videosEl) videosEl.setAttribute('data-count', data.video_count || SITE_CONFIG.biliFallback.videoCount);
+        if (followerEl) followerEl.setAttribute('data-count', data.fans || SITE_CONFIG.biliFallback.follower);
+        if (followingEl) followingEl.setAttribute('data-count', data.attention || SITE_CONFIG.biliFallback.following);
+        if (videosEl) videosEl.setAttribute('data-count', archive_count || SITE_CONFIG.biliFallback.videoCount);
 
         // Hero stats
         var heroFans = document.getElementById('stat-fans');
         var heroVideos = document.getElementById('stat-videos');
-        if (heroFans) heroFans.setAttribute('data-count', data.follower || SITE_CONFIG.biliFallback.follower);
-        if (heroVideos) heroVideos.setAttribute('data-count', data.video_count || SITE_CONFIG.biliFallback.videoCount);
+        if (heroFans) heroFans.setAttribute('data-count', data.fans || SITE_CONFIG.biliFallback.follower);
+        if (heroVideos) heroVideos.setAttribute('data-count', archive_count || SITE_CONFIG.biliFallback.videoCount);
 
         // Level
         var levelEl = document.querySelector('.bili__level');
-        if (levelEl && data.level) levelEl.textContent = 'Lv.' + data.level;
+        if (levelEl && data.level_info) levelEl.textContent = 'Lv.' + data.level_info.current_level;
 
-        // Categories
-        storedCategories = data.categories || storedCategories;
+        // Categories (API doesn't provide detailed categories, use fallback)
+        storedCategories = SITE_CONFIG.biliCategories || storedCategories;
         renderBiliCategories(storedCategories);
 
         markBiliLoaded();
