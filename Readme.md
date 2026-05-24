@@ -27,7 +27,6 @@
   &nbsp;
   <img src="https://img.shields.io/github/stars/Little100?style=for-the-badge&label=Stars+on+owned+repos&affiliations=OWNER&color=d97706&logo=github" alt="你名下仓库获得的 Star 总和" />
 </p>
-<p align="center"><sub>蓝色数字是<strong>关注者</strong>，金色是<strong>仓库获星总和</strong>；折叠区里 Trophy 的 Stars 是<strong>奖杯积分</strong>，不是 Star 条数。</sub></p>
 
 ---
 
